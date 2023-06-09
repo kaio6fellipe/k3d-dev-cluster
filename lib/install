@@ -1,3 +1,28 @@
 #!/bin/bash
 
-echo "install"
+command -v docker >/dev/null 2>&1 || { echo >&2 "It's required to install docker but it's not installed. Aborting."; exit 1; }
+if ! command -v docker &> /dev/null
+then
+    echo "It's required to install docker but it's not installed. Aborting."
+    exit 1
+else
+    echo "docker already installed with version: \"$(docker --version)\""
+fi
+
+if ! command -v kubectl &> /dev/null
+then
+    echo "kubectl not found, installing..."
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/arm64/kubectl"
+    chmod +x ./kubectl
+    sudo mv ./kubectl /usr/local/bin/kubectl
+else
+    echo "kubectl already installed with version $(kubectl version --output=json | jq '.clientVersion.gitVersion')"
+fi
+
+if ! command -v k3d &> /dev/null
+then
+    echo "k3d not found, installing..."
+    curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+else
+    echo "k3d already installed with version: \"$(k3d --version | grep k3d)\""
+fi

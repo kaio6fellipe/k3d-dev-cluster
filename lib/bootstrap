@@ -1,3 +1,3 @@
 #!/bin/bash
 
-echo "bootstrap"
+k3d cluster create dev-cluster-${USER} --agents 3 --servers 3

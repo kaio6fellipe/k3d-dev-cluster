@@ -1,4 +1,4 @@
-# k3d-dev-cluster
+# Base project to setup a K8S cluster to develop cloud native applications with Observability
 
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=kaio6fellipe_k3d-dev-cluster&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=kaio6fellipe_k3d-dev-cluster)
 [![Lines of Code](https://sonarcloud.io/api/project_badges/measure?project=kaio6fellipe_k3d-dev-cluster&metric=ncloc)](https://sonarcloud.io/summary/new_code?id=kaio6fellipe_k3d-dev-cluster)
