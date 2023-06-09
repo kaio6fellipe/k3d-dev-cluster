@@ -11,7 +11,7 @@ install: ##@initilization Install dependencies to use k3d.
 	@bash lib/install
 
 .PHONY: bootstrap
-bootstrap: ##@cluster Bootstrap cluster with everything
+bootstrap: cleanup ##@cluster Bootstrap cluster with everything
 	@bash lib/bootstrap
 
 .PHONY: cleanup

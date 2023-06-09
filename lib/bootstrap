@@ -1,3 +1,8 @@
 #!/bin/bash
 
 k3d cluster create dev-cluster-${USER} --agents 3 --servers 3
+
+sleep 10
+
+kubectl delete deployment -n kube-system metrics-server
+kubectl apply -f clusters/metrics-server.yaml
