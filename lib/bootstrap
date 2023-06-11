@@ -3,54 +3,14 @@
 source ./lib/colors
 
 status_cluster_create="0"
-status_base_resources="0"
-status_apps_resources="0"
-status_helm_resources="0"
 
 # Bootstrap
 color_echo_blue "Bootstraping cluster..."
 # k3d cluster create dev-cluster --agents 3 --servers 3 -p "8081:80@loadbalancer" || status_cluster_create="1"
 k3d cluster create --config clusters/k3d-config.yaml || status_cluster_create="1"
+kubectl delete deployment -n kube-system metrics-server &> /dev/null || status_cluster_create="1"
 if [[ "${status_cluster_create}" != 0 ]]; then
     color_echo_red "...Failed to bootstrap cluster."
     exit 1
 fi
 color_echo_green "...Bootstrap finished."
-
-# Base manifests
-color_echo_blue "Deploying base manifests..."
-kubectl delete deployment -n kube-system metrics-server &> /dev/null || status_base_resources="1"
-kubectl apply -f bootstrap/base --recursive &> /dev/null || status_base_resources="1"
-kubectl rollout restart deployment metrics-server -n kube-system
-kubectl rollout status deployment metrics-server -n kube-system --timeout=90s
-if [[ "${status_base_resources}" != 0 ]]; then
-    color_echo_red "...Failed to deploy base manifests."
-    exit 1
-fi
-color_echo_green "...Base manifests deployed."
-
-# Helm apps
-color_echo_blue "Deploying helm apps..."
-set -e
-for file in bootstrap/helm/*.sh; do
-    bash "$file" || status_helm_resources="1"
-done
-set +e
-if [[ "${status_helm_resources}" != 0 ]]; then
-    color_echo_red "...Failed to deploy helm apps."
-    exit 1
-fi
-color_echo_green "...Helm apps deployed."
-
-# Apps manifests
-color_echo_blue "Deploying apps manifests..."
-set -e
-for file in bootstrap/apps/*.sh; do
-    bash "$file" || status_apps_resources="1"
-done
-set +e
-if [[ "${status_apps_resources}" != 0 ]]; then
-    color_echo_red "...Failed to deploy apps manifests."
-    exit 1
-fi
-color_echo_green "...Apps manifests deployed."
