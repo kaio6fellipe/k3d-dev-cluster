@@ -15,6 +15,7 @@ then
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/arm64/kubectl"
     chmod +x ./kubectl
     sudo mv ./kubectl /usr/local/bin/kubectl
+    echo "...kubectl installed."
 else
     echo "kubectl already installed with version $(kubectl version --output=json | jq '.clientVersion.gitVersion')"
 fi
@@ -23,6 +24,16 @@ if ! command -v k3d &> /dev/null
 then
     echo "k3d not found, installing..."
     curl -s https://raw.githubusercontent.com/k3d-io/k3d/main/install.sh | bash
+    echo "...k3d installed."
 else
     echo "k3d already installed with version: \"$(k3d --version | grep k3d)\""
+fi
+
+if ! command -v helm &> /dev/null
+then
+    echo "helm not found, installing..."
+    curl https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 | bash
+    echo "...helm installed."
+else
+    echo "helm already installed with version: \"$(helm version --template='{{.Version}}')\""
 fi

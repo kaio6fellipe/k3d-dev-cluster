@@ -24,7 +24,6 @@ spec:
     type: RollingUpdate
   template:
     metadata:
-      creationTimestamp: null
       labels:
         k8s-app: metrics-server
       name: metrics-server

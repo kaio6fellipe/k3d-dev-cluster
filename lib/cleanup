@@ -1,3 +1,13 @@
 #!/bin/bash
 
-k3d cluster delete --all
+source ./lib/colors
+
+status_cluster_delete="0"
+
+color_echo_blue "Cleaning up everything..."
+k3d cluster delete --all || status_cluster_delete="1"
+if [[ "${status_cluster_delete}" != 0 ]]; then
+    color_echo_red "...Failed to cleanup clusters."
+    exit 1
+fi
+color_echo_green "...Cleanup finished."
