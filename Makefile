@@ -17,6 +17,7 @@ bootstrap: cleanup ##@cluster Bootstrap cluster with everything
 	make base-helm
 	make apps-manifests
 	make apps-helm
+	make list-ingress-domain
 
 .PHONY: cleanup
 cleanup: ##@cluster Delete cluster
@@ -37,3 +38,7 @@ base-manifests: ##@cluster Apply the manifests on bootstrap/base/manifests folde
 .PHONY: base-helm
 base-helm: ##@cluster Apply the manifests on bootstrap/base/helm folder
 	@bash lib/base-helm
+
+.PHONY: list-ingress-domain
+list-ingress-domain: ##@cluster List base ingress domain information
+	@bash lib/list-ingress-domain

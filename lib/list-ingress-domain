@@ -1,0 +1,12 @@
+#!/bin/bash
+
+source ./lib/colors
+
+INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
+INGRESS_DOMAIN=${INGRESS_HOST}.nip.io
+
+color_echo_green "\n"
+color_echo_green "- Ingress base domain: ${INGRESS_DOMAIN}"
+color_echo_green "  - Kiali URL: http://kiali.${INGRESS_DOMAIN}"
+color_echo_green "  - Nginx Example URL: http://${INGRESS_DOMAIN}/nginx-example"
+color_echo_green " "
