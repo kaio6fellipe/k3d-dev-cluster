@@ -1,0 +1,18 @@
+#!/bin/bash
+
+source ./lib/colors
+
+status_apps_helm_resources="0"
+
+# Apps manifests
+color_echo_blue "Deploying apps with helm..."
+set -e
+for file in bootstrap/apps/helm/*.sh; do
+    bash "$file" || status_apps_helm_resources="1"
+done
+set +e
+if [[ "${status_apps_helm_resources}" != 0 ]]; then
+    color_echo_red "...Failed to deploy apps with helm."
+    exit 1
+fi
+color_echo_green "...Apps deployed with helm."

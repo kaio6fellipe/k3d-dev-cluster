@@ -5,14 +5,14 @@ source ./lib/colors
 status_helm_resources="0"
 
 # Helm apps
-color_echo_blue "Deploying helm apps..."
+color_echo_blue "Deploying base helm..."
 set -e
-for file in bootstrap/helm/*.sh; do
+for file in bootstrap/base/helm/*.sh; do
     bash "$file" || status_helm_resources="1"
 done
 set +e
 if [[ "${status_helm_resources}" != 0 ]]; then
-    color_echo_red "...Failed to deploy helm apps."
+    color_echo_red "...Failed to deploy base helm."
     exit 1
 fi
-color_echo_green "...Helm apps deployed."
+color_echo_green "...Helm base apps deployed."

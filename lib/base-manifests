@@ -6,9 +6,11 @@ status_base_resources="0"
 
 # Base manifests
 color_echo_blue "Deploying base manifests..."
-kubectl apply -f bootstrap/base --recursive &> /dev/null || status_base_resources="1"
-# kubectl rollout restart deployment metrics-server -n kube-system
-kubectl rollout status deployment metrics-server -n kube-system --timeout=90s
+set -e
+for file in bootstrap/base/manifests/*.sh; do
+    bash "$file" || status_base_resources="1"
+done
+set +e
 if [[ "${status_base_resources}" != 0 ]]; then
     color_echo_red "...Failed to deploy base manifests."
     exit 1

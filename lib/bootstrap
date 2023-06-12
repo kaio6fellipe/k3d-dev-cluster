@@ -8,7 +8,6 @@ status_cluster_create="0"
 color_echo_blue "Bootstraping cluster..."
 # k3d cluster create dev-cluster --agents 3 --servers 3 -p "8081:80@loadbalancer" || status_cluster_create="1"
 k3d cluster create --config clusters/k3d-config.yaml || status_cluster_create="1"
-kubectl delete deployment -n kube-system metrics-server &> /dev/null || status_cluster_create="1"
 if [[ "${status_cluster_create}" != 0 ]]; then
     color_echo_red "...Failed to bootstrap cluster."
     exit 1
