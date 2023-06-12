@@ -23,17 +23,17 @@ cleanup: ##@cluster Delete cluster
 	@bash lib/cleanup
 
 .PHONY: apps-manifests
-apps-manifests: ##@apps-config Apply the manifests on bootstrap/apps/manifests folder
+apps-manifests: ##@cluster Apply the manifests on bootstrap/apps/manifests folder
 	@bash lib/apps-manifests
 
 .PHONY: apps-helm
-apps-helm: ##@apps-config Apply the manifests on bootstrap/apps/helm folder
+apps-helm: ##@cluster Apply the manifests on bootstrap/apps/helm folder
 	@bash lib/apps-helm
 
 .PHONY: base-manifests
-base-manifests: ##@base-config Apply the manifests on bootstrap/base folder
+base-manifests: ##@cluster Apply the manifests on bootstrap/base/manifests folder
 	@bash lib/base-manifests
 
 .PHONY: base-helm
-base-helm: ##@base-config Apply the manifests on bootstrap/helm folder
+base-helm: ##@cluster Apply the manifests on bootstrap/base/helm folder
 	@bash lib/base-helm
