@@ -4,6 +4,7 @@ source ./lib/colors
 
 INGRESS_HOST=$(kubectl -n istio-system get service istio-ingressgateway -o jsonpath='{.status.loadBalancer.ingress[0].ip}')
 INGRESS_DOMAIN=${INGRESS_HOST}.nip.io
+DASHBOARD_TOKEN=$(kubectl -n kubernetes-dashboard create token admin-user)
 
 color_echo_green "\n"
 color_echo_green "- Ingress base domain: ${INGRESS_DOMAIN}"
@@ -11,3 +12,9 @@ color_echo_green "  - Kiali URL: http://kiali.${INGRESS_DOMAIN}"
 color_echo_green "  - Nginx Example with URI: http://${INGRESS_DOMAIN}/nginx-example"
 color_echo_green "  - Nginx Example with sub domain: http://nginx-example.${INGRESS_DOMAIN}"
 color_echo_green " "
+color_echo_green " "
+color_echo_green "- Kubernetes Dashboard:"
+color_echo_green "  - Use the command: "
+color_echo_green "      kubectl proxy"
+color_echo_green "  - URL: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/"
+color_echo_green "  - Token: ${DASHBOARD_TOKEN}"
