@@ -1,13 +1,15 @@
 #!/bin/bash
 
 # Istio
-helm repo add istio https://istio-release.storage.googleapis.com/charts
-helm repo update
-kubectl create namespace istio-system
-helm upgrade --install istio-base istio/base -n istio-system --wait
-helm upgrade --install istiod istio/istiod -n istio-system --wait
-kubectl label namespace istio-system istio-injection=enabled
-helm upgrade --install istio-ingressgateway istio/gateway -n istio-system --wait
+istioctl install --set profile=demo -y
+kubectl label namespace default istio-injection=enabled
+# helm repo add istio https://istio-release.storage.googleapis.com/charts
+# helm repo update
+# kubectl create namespace istio-system
+# helm upgrade --install istio-base istio/base -n istio-system --wait
+# helm upgrade --install istiod istio/istiod -n istio-system --wait
+# kubectl label namespace istio-system istio-injection=enabled
+# helm upgrade --install istio-ingressgateway istio/gateway -n istio-system --wait
 
 # Kubernetes dashboard
 GITHUB_URL=https://github.com/kubernetes/dashboard/releases
@@ -19,3 +21,6 @@ kubectl create clusterrolebinding -n kubernetes-dashboard admin-user --clusterro
 # Istio addons
 kubectl apply -f ./bootstrap/base/helm/istio --recursive
 kubectl rollout status deployment/kiali -n istio-system
+for file in bootstrap/base/helm/istio/*.sh; do
+    bash "$file"
+done

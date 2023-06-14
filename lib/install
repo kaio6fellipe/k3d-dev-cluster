@@ -37,3 +37,12 @@ then
 else
     echo "helm already installed with version: \"$(helm version --template='{{.Version}}')\""
 fi
+
+if ! command -v istioctl &> /dev/null
+then
+    echo "istioctl not found, installing..."
+    sudo cp bootstrap/base/istio-1.18.0/bin/istioctl /usr/local/bin/istioctl
+    echo "...istioctl installed."
+else
+    echo "istioctl already installed"
+fi
