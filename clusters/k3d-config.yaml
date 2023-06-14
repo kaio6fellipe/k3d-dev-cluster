@@ -3,7 +3,7 @@ apiVersion: k3d.io/v1alpha5
 metadata:
   name: dev-cluster
 servers: 3
-agents: 3
+agents: 4
 kubeAPI:
   hostIP: 0.0.0.0
   hostPort: "6550"
