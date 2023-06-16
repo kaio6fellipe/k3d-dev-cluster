@@ -35,7 +35,7 @@ jobs:
         id: kube-lint-repo
         uses: stackrox/kube-linter-action@v1.0.4
         with:
-          directory: clusters
+          directory: bootstrap
           format: sarif
           output-file: kube-linter.sarif
         continue-on-error: true
