@@ -42,7 +42,3 @@ base-helm: ##@cluster Apply the manifests on bootstrap/base/helm folder
 .PHONY: list-ingress-domain
 list-ingress-domain: ##@cluster List base ingress domain information
 	@bash lib/list-ingress-domain
-
-.PHONY: test
-test: ##@cluster Test bookinfo application
-	@bash lib/test
