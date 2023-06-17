@@ -14,10 +14,8 @@ install: ##@initilization Install dependencies to use k3d.
 bootstrap: cleanup ##@cluster Bootstrap cluster with everything
 	@bash lib/bootstrap
 	make base-manifests
-	make base-helm
 	make apps-manifests
-	make apps-helm
-	make list-ingress-domain
+	make list-cluster-info
 
 .PHONY: cleanup
 cleanup: ##@cluster Delete cluster
@@ -27,18 +25,10 @@ cleanup: ##@cluster Delete cluster
 apps-manifests: ##@cluster Apply the manifests on bootstrap/apps/manifests folder
 	@bash lib/apps-manifests
 
-.PHONY: apps-helm
-apps-helm: ##@cluster Apply the manifests on bootstrap/apps/helm folder
-	@bash lib/apps-helm
-
 .PHONY: base-manifests
 base-manifests: ##@cluster Apply the manifests on bootstrap/base/manifests folder
 	@bash lib/base-manifests
 
-.PHONY: base-helm
-base-helm: ##@cluster Apply the manifests on bootstrap/base/helm folder
-	@bash lib/base-helm
-
-.PHONY: list-ingress-domain
-list-ingress-domain: ##@cluster List base ingress domain information
-	@bash lib/list-ingress-domain
+.PHONY: list-cluster-info
+list-cluster-info: ##@cluster List base ingress domain information
+	@bash lib/list-cluster-info

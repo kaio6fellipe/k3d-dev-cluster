@@ -7,7 +7,7 @@ status_base_resources="0"
 # Base manifests
 color_echo_blue "Deploying base manifests..."
 set -e
-for file in bootstrap/base/manifests/*.sh; do
+for file in bootstrap/base/*.sh; do
     bash "$file" || status_base_resources="1"
 done
 set +e

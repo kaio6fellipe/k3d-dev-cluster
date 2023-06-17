@@ -7,7 +7,7 @@ status_apps_resources="0"
 # Apps manifests
 color_echo_blue "Deploying apps manifests..."
 set -e
-for file in bootstrap/apps/manifests/*.sh; do
+for file in bootstrap/apps/*.sh; do
     bash "$file" || status_apps_resources="1"
 done
 set +e

@@ -4,7 +4,6 @@ source ./lib/colors
 
 DASHBOARD_TOKEN=$(kubectl -n kubernetes-dashboard create token admin-user)
 
-color_echo_green "\n"
 color_echo_green "- Kubernetes Dashboard:"
 color_echo_green "  - Use the command: "
 color_echo_green "      kubectl proxy"
