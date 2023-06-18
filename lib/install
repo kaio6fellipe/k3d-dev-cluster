@@ -37,3 +37,15 @@ then
 else
     echo "helm already installed with version: \"$(helm version --template='{{.Version}}')\""
 fi
+
+if ! command -v kubeseal &> /dev/null
+then
+    echo "kubeseal not found, installing..."
+    wget https://github.com/bitnami-labs/sealed-secrets/releases/download/v0.22.0/kubeseal-0.22.0-linux-amd64.tar.gz
+    tar -xvzf kubeseal-0.22.0-linux-amd64.tar.gz kubeseal
+    sudo install -m 755 kubeseal /usr/local/bin/kubeseal
+    rm kubeseal-0.22.0-linux-amd64.tar.gz kubeseal
+    echo "...kubeseal installed."
+else
+    echo "kubeseal already installed with version: \"$(kubeseal --version)\""
+fi
