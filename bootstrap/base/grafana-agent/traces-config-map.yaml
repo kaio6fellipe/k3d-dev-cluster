@@ -16,33 +16,47 @@ data:
               - agent_hostname
             target_label: instance
     metrics:
-      wal_directory: /var/lib/agent/wal
       global:
         scrape_interval: 60s
         external_labels:
           cluster: dev-cluster
+        remote_write:
+          - url: https://prometheus-prod-13-prod-us-east-0.grafana.net/api/prom
+            basic_auth:
+              username: ${GRAFANA_CLOUD_METRICSUSER}
+              password: ${GRAFANA_CLOUD_TOKEN}
+            send_exemplars: true
       configs:
         - name: default
           scrape_configs:
             - job_name: tempo_service_graph_metrics
               static_configs:
-                - targets: ['127.0.0.1:80']
-          remote_write:
-            - url: https://prometheus-prod-13-prod-us-east-0.grafana.net/api/prom
-              basic_auth:
-                username: ${GRAFANA_CLOUD_METRICSUSER}
-                password: ${GRAFANA_CLOUD_TOKEN}
+                - targets: ['127.0.0.1:12345']
     traces:
       configs:
         - batch:
               send_batch_size: 1000
               timeout: 5s
           name: default
+          spanmetrics:
+            dimensions:
+              - name: http.method
+              - name: http.target
+              - name: http.status_code
+              - name: service.version
+            handler_endpoint: 0.0.0.0:12345
           service_graphs:
             enabled: true
           automatic_logging:
             backend: stdout
             roots: true
+            spans: false
+            span_attributes:
+              - http.method
+              - http.target
+              - http.status_code
+            overrides:
+              trace_id_key: "traceId"
           receivers:
               jaeger:
                   protocols:
@@ -66,7 +80,11 @@ data:
                   username: ${GRAFANA_CLOUD_TRACESUSER}
               endpoint: tempo-prod-04-prod-us-east-0.grafana.net:443
               retry_on_failure:
-                  enabled: false
+                  enabled: true
+              sending_queue:
+                enabled: true
+                num_consumers: 10
+                queue_size: 50000
           scrape_configs:
             - bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
               job_name: kubernetes-pods
