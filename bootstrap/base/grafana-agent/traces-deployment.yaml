@@ -29,12 +29,17 @@ spec:
             - name: GRAFANA_CLOUD_TRACESUSER
               valueFrom:
                 secretKeyRef:
-                  name: eks-secret-grafana-agent
+                  name: secret-grafana-agent
                   key: GRAFANA_CLOUD_TRACESUSER
+            - name: GRAFANA_CLOUD_METRICSUSER
+              valueFrom:
+                secretKeyRef:
+                  name: secret-grafana-agent
+                  key: GRAFANA_CLOUD_METRICSUSER
             - name: GRAFANA_CLOUD_TOKEN
               valueFrom:
                 secretKeyRef:
-                  name: eks-secret-grafana-agent
+                  name: secret-grafana-agent
                   key: GRAFANA_CLOUD_TOKEN
           image: grafana/agent:v0.34.0-rc.0
           imagePullPolicy: IfNotPresent
