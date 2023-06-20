@@ -47,6 +47,8 @@ spec:
           ports:
             - containerPort: 80
               name: http-metrics
+            - containerPort: 12345
+              name: self-scrape-metrics
             - containerPort: 6831
               name: thrift-compact
               protocol: UDP

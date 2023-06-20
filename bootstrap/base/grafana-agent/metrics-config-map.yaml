@@ -2,11 +2,11 @@ kind: ConfigMap
 metadata:
   name: grafana-agent
   namespace: grafana-agent
-  annotations:
-    argocd.argoproj.io/sync-wave: "-1"
 apiVersion: v1
 data:
   agent.yaml: |
+    server:
+      log_level: info
     metrics:
       wal_directory: /var/lib/agent/wal
       global:
@@ -20,6 +20,7 @@ data:
           basic_auth:
             username: ${GRAFANA_CLOUD_METRICSUSER}
             password: ${GRAFANA_CLOUD_TOKEN}
+          send_exemplars: true
         scrape_configs:
         - bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
           job_name: integrations/kubernetes/cadvisor
@@ -225,7 +226,6 @@ data:
               source_labels:
                 - __meta_kubernetes_pod_node_name
               target_label: instance
-
     integrations:
       eventhandler:
         cache_path: /var/lib/agent/eventhandler.cache

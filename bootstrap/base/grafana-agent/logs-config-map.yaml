@@ -2,11 +2,11 @@ kind: ConfigMap
 metadata:
   name: grafana-agent-logs
   namespace: grafana-agent
-  annotations:
-    argocd.argoproj.io/sync-wave: "-1"
 apiVersion: v1
 data:
   agent.yaml: |
+    server:
+      log_level: info
     metrics:
       wal_directory: /tmp/grafana-agent-wal
       global:
@@ -26,7 +26,13 @@ data:
         basic_auth:
           username: ${GRAFANA_CLOUD_METRICSUSER}
           password: ${GRAFANA_CLOUD_TOKEN}
-
+      agent:
+        enabled: true
+        relabel_configs:
+          - action: replace
+            source_labels:
+              - agent_hostname
+            target_label: instance
     logs:
       configs:
       - name: integrations
@@ -42,6 +48,24 @@ data:
         target_config:
           sync_period: 10s
         scrape_configs:
+        - job_name: integrations/agent
+          journal:
+            max_age: 24h
+            labels:
+              instance: hostname
+              job: integrations/agent
+          pipeline_stages:
+            - match:
+                selector: '{unit!="grafana-agent.service"}'
+                action: drop
+                drop_counter_reason: only_keep_grafana_agent_logs
+            - regex:
+                expression: "(level=(?P<log_level>[\\s]*debug|warn|info|error))"
+            - labels:
+                level: log_level
+          relabel_configs:
+            - source_labels: ['__journal__systemd_unit']
+              target_label: 'unit'
         - job_name: integrations/grafana-mimir-logs
           kubernetes_sd_configs:
             - role: pod
@@ -125,3 +149,26 @@ data:
                 - __meta_kubernetes_pod_uid
                 - __meta_kubernetes_pod_container_name
               target_label: __path__
+        - job_name: integrations/node_exporter_journal_scrape
+          journal:
+            max_age: 24h
+            labels:
+              instance: dev-cluster
+              job: integrations/node_exporter
+          relabel_configs:
+          - source_labels: ['__journal__systemd_unit']
+            target_label: 'unit'
+          - source_labels: ['__journal__boot_id']
+            target_label: 'boot_id'
+          - source_labels: ['__journal__transport']
+            target_label: 'transport'
+          - source_labels: ['__journal_priority_keyword']
+            target_label: 'level'
+        - job_name: integrations/node_exporter_direct_scrape
+          static_configs:
+          - targets:
+            - localhost
+            labels:
+              instance: dev-cluster
+              __path__: /var/log/{syslog,messages,*.log}
+              job: integrations/node_exporter

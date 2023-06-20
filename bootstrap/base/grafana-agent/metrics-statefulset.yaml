@@ -109,6 +109,8 @@ spec:
               name: agent-wal
             - mountPath: /etc/agent
               name: grafana-agent
+            - mountPath: /tmp
+              name: agent-events-positions
       serviceAccountName: grafana-agent
       volumes:
         - configMap:
@@ -128,3 +130,15 @@ spec:
         resources:
           requests:
             storage: 5Gi
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: agent-events-positions
+        namespace: grafana-agent
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+      

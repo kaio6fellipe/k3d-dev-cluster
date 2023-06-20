@@ -98,6 +98,8 @@ spec:
             - mountPath: /var/lib/docker/containers
               name: varlibdockercontainers
               readOnly: true
+            - mountPath: /tmp
+              name: tmppromtail
       serviceAccountName: grafana-agent-logs
       tolerations:
         - effect: NoSchedule
@@ -112,5 +114,8 @@ spec:
         - hostPath:
             path: /var/lib/docker/containers
           name: varlibdockercontainers
+        - hostPath:
+            path: /tmp/promtail
+          name: tmppromtail
   updateStrategy:
     type: RollingUpdate
