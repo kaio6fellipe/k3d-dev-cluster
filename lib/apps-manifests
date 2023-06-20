@@ -8,11 +8,16 @@ status_apps_resources="0"
 color_echo_blue "Deploying apps manifests..."
 set -e
 for file in bootstrap/apps/*.sh; do
+    color_echo_blue "Executing file "${file}"..."
     bash "$file" || status_apps_resources="1"
+
+    if [[ "${status_apps_resources}" != 0 ]]; then
+        color_echo_red "...Failed to deploy apps manifests."
+        exit 1
+    fi
+
+    color_echo_blue "...File "${file}" executed."
 done
 set +e
-if [[ "${status_apps_resources}" != 0 ]]; then
-    color_echo_red "...Failed to deploy apps manifests."
-    exit 1
-fi
+
 color_echo_green "...Apps manifests deployed."
