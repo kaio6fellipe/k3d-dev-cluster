@@ -41,13 +41,13 @@ spec:
                 secretKeyRef:
                   name: secret-grafana-agent
                   key: GRAFANA_CLOUD_TOKEN
-          image: grafana/agent:v0.34.0-rc.0
+          image: grafana/agent:v0.33.1
           imagePullPolicy: IfNotPresent
           name: grafana-agent-traces
           ports:
             - containerPort: 80
               name: http-metrics
-            - containerPort: 12345
+            - containerPort: 12348
               name: self-scrape
             - containerPort: 6831
               name: thrift-compact

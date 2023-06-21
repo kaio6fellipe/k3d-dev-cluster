@@ -32,3 +32,7 @@ base-manifests: ##@cluster Apply the manifests on bootstrap/base/manifests folde
 .PHONY: list-cluster-info
 list-cluster-info: ##@cluster List base ingress domain information
 	@bash lib/list-cluster-info
+
+.PHONY: nettools
+nettools: ##@operation Enter in the busybox pod
+	@kubectl exec -it nettools -- bash

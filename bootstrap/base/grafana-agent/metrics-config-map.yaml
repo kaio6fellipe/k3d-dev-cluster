@@ -6,7 +6,7 @@ apiVersion: v1
 data:
   agent.yaml: |
     server:
-      log_level: debug
+      log_level: info
     integrations:
       eventhandler:
         cache_path: /var/lib/agent/eventhandler.cache
@@ -244,6 +244,10 @@ data:
               source_labels:
                 - __meta_kubernetes_pod_node_name
               target_label: instance
+        - job_name: 'span-metrics'
+          scrape_interval: 60s
+          static_configs:
+            - targets: ['grafana-agent-traces.grafana-agent.svc.cluster.local:12348']
     logs:
       configs:
       - name: integrations

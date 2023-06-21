@@ -12,8 +12,8 @@ spec:
       port: 80
       targetPort: 80
     - name: grafana-agent-self-scrape-metrics
-      port: 12345
-      targetPort: 12345
+      port: 12348
+      targetPort: 12348
     - name: grafana-agent-traces-thrift-compact
       port: 6831
       protocol: UDP

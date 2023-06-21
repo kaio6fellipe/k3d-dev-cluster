@@ -13,8 +13,11 @@ data:
         basic_auth:
           username: ${GRAFANA_CLOUD_METRICSUSER}
           password: ${GRAFANA_CLOUD_TOKEN}
+        send_exemplars: true
       agent:
         enabled: true
+        scrape_integration: true
+        scrape_interval: 60s
         relabel_configs:
           - action: replace
             replacement: k3d-dev-cluster-traces
@@ -33,11 +36,12 @@ data:
               password: ${GRAFANA_CLOUD_TOKEN}
             send_exemplars: true
       configs:
-        - name: default
-          scrape_configs:
-            - job_name: tempo_service_graph_metrics
-              static_configs:
-                - targets: ['127.0.0.1:12345']
+      - name: integrations
+        scrape_configs: []
+          # - job_name: 'span-metrics'
+          #   scrape_interval: 60s
+          #   static_configs:
+          #     - targets: ['grafana-agent-traces.grafana-agent.svc.cluster.local:12348']
     logs:
       configs:
       - name: integrations
@@ -74,21 +78,22 @@ data:
     traces:
       configs:
         - batch:
-              send_batch_size: 1000
-              timeout: 5s
-          name: default
+            send_batch_size: 1000
+            timeout: 5s
+          name: integrations
           spanmetrics:
             dimensions:
               - name: http.method
               - name: http.target
               - name: http.status_code
               - name: service.version
-            handler_endpoint: 0.0.0.0:12345
+            handler_endpoint: 0.0.0.0:12348
           service_graphs:
             enabled: true
           automatic_logging:
             backend: stdout
             roots: true
+            processes: false
             spans: false
             span_attributes:
               - http.method
@@ -97,32 +102,32 @@ data:
             overrides:
               trace_id_key: "traceId"
           receivers:
-              jaeger:
-                  protocols:
-                      grpc: null
-                      thrift_binary: null
-                      thrift_compact: null
-                      thrift_http: null
-                  remote_sampling:
-                      strategy_file: /etc/agent/strategies.json
-                      tls:
-                          insecure: true
-              opencensus: null
-              otlp:
-                  protocols:
-                      grpc: null
-                      http: null
-              zipkin: null
+            jaeger:
+              protocols:
+                grpc: null
+                thrift_binary: null
+                thrift_compact: null
+                thrift_http: null
+              remote_sampling:
+                strategy_file: /etc/agent/strategies.json
+                tls:
+                  insecure: true
+            opencensus: null
+            otlp:
+              protocols:
+                grpc: null
+                http: null
+            zipkin: null
           remote_write:
             - basic_auth:
-                  password: ${GRAFANA_CLOUD_TOKEN}
-                  username: ${GRAFANA_CLOUD_TRACESUSER}
+                password: ${GRAFANA_CLOUD_TOKEN}
+                username: ${GRAFANA_CLOUD_TRACESUSER}
               endpoint: tempo-prod-04-prod-us-east-0.grafana.net:443
               retry_on_failure:
-                  enabled: true
+                enabled: true
               sending_queue:
                 enabled: true
-                num_consumers: 10
+                num_consumers: 20
                 queue_size: 50000
           scrape_configs:
             - bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
@@ -143,6 +148,6 @@ data:
                     - __meta_kubernetes_pod_container_name
                   target_label: container
               tls_config:
-                  ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-                  insecure_skip_verify: false
+                ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+                insecure_skip_verify: false
   strategies.json: '{"default_strategy": {"param": 0.001, "type": "probabilistic"}}'
