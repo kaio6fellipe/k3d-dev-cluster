@@ -1,0 +1,113 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    meta.helm.sh/release-name: opencost
+    meta.helm.sh/release-namespace: grafana-agent
+  labels:
+    app.kubernetes.io/instance: opencost
+    app.kubernetes.io/name: opencost
+    app.kubernetes.io/part-of: opencost
+  name: opencost
+  namespace: grafana-agent
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 1
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app.kubernetes.io/instance: opencost
+      app.kubernetes.io/name: opencost
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/instance: opencost
+        app.kubernetes.io/name: opencost
+    spec:
+      containers:
+        - env:
+            - name: PROMETHEUS_SERVER_ENDPOINT
+              value: https://prometheus-prod-13-prod-us-east-0.grafana.net/api/prom
+            - name: CLUSTER_ID
+              value: dev-cluster
+            - name: DB_BASIC_AUTH_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: secret-grafana-agent
+                  key: GRAFANA_CLOUD_METRICSUSER
+            - name: DB_BASIC_AUTH_PW
+              valueFrom:
+                secretKeyRef:
+                  name: secret-grafana-agent
+                  key: GRAFANA_CLOUD_TOKEN
+            - name: CLOUD_PROVIDER_API_KEY
+              value: AIzaSyD29bGxmHAVEOBYtgd8sYM2gM2ekfxQX4U
+              valueFrom:
+                secretKeyRef:
+                  name: secret-grafana-agent
+                  key: CLOUD_PROVIDER_API_KEY
+            - name: CONFIG_PATH
+              value: /tmp/custom-config
+            - name: EMIT_KSM_V1_METRICS
+              value: "false"
+            - name: EMIT_KSM_V1_METRICS_ONLY
+              value: "true"
+            - name: PROM_CLUSTER_ID_LABEL
+              value: cluster
+          image: quay.io/kubecost1/kubecost-cost-model:prod-1.104.0
+          imagePullPolicy: Always
+          livenessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 9003
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          name: opencost
+          ports:
+            - containerPort: 9003
+              name: http
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /healthz
+              port: 9003
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            successThreshold: 1
+            timeoutSeconds: 1
+          resources:
+            limits:
+              cpu: 999m
+              memory: 1Gi
+            requests:
+              cpu: 10m
+              memory: 55Mi
+          securityContext: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+            - mountPath: /tmp/custom-config
+              name: custom-configs
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      serviceAccount: opencost
+      serviceAccountName: opencost
+      terminationGracePeriodSeconds: 30
+      volumes:
+        - configMap:
+            defaultMode: 420
+            name: opencost-conf
+          name: custom-configs

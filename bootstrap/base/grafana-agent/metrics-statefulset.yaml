@@ -1,0 +1,85 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: grafana-agent
+  namespace: grafana-agent
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: grafana-agent
+  serviceName: grafana-agent
+  template:
+    metadata:
+      labels:
+        name: grafana-agent
+    spec:
+      containers:
+        - args:
+            - -config.expand-env=true
+            - -config.file=/etc/agent/agent.yaml
+            - -enable-features=integrations-next
+            - -server.http.address=0.0.0.0:80
+          env:
+            - name: HOSTNAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: GRAFANA_CLOUD_METRICSUSER
+              valueFrom:
+                secretKeyRef:
+                  name: secret-grafana-agent
+                  key: GRAFANA_CLOUD_METRICSUSER
+            - name: GRAFANA_CLOUD_LOGSUSER
+              valueFrom:
+                secretKeyRef:
+                  name: secret-grafana-agent
+                  key: GRAFANA_CLOUD_LOGSUSER
+            - name: GRAFANA_CLOUD_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: secret-grafana-agent
+                  key: GRAFANA_CLOUD_TOKEN
+          image: grafana/agent:v0.33.1
+          imagePullPolicy: IfNotPresent
+          name: grafana-agent
+          ports:
+            - containerPort: 80
+              name: http-metrics
+          volumeMounts:
+            - mountPath: /var/lib/agent
+              name: agent-wal
+            - mountPath: /etc/agent
+              name: grafana-agent
+            - mountPath: /tmp
+              name: agent-events-positions
+      serviceAccountName: grafana-agent
+      volumes:
+        - configMap:
+            name: grafana-agent
+          name: grafana-agent
+  updateStrategy:
+    type: RollingUpdate
+  volumeClaimTemplates:
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: agent-wal
+        namespace: grafana-agent
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: agent-events-positions
+        namespace: grafana-agent
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 5Gi
