@@ -4,8 +4,9 @@ source ./lib/colors
 
 DASHBOARD_TOKEN=$(kubectl -n kubernetes-dashboard create token admin-user)
 
-color_echo_green "- Kubernetes Dashboard:"
-color_echo_green "  - Use the command: "
-color_echo_green "      kubectl proxy"
-color_echo_green "  - URL: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/"
-color_echo_green "  - Token: ${DASHBOARD_TOKEN}"
+color_echo_green "Kubernetes Dashboard access:"
+color_echo_green "- Use the command: "
+color_echo_blue  "    kubectl proxy"
+color_echo_green "- URL: http://localhost:8001/api/v1/namespaces/kubernetes-dashboard/services/https:kubernetes-dashboard:/proxy/"
+color_echo_green "- Token:"
+color_echo_blue  "${DASHBOARD_TOKEN}"
