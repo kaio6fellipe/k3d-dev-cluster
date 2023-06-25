@@ -244,6 +244,14 @@ data:
               source_labels:
                 - __meta_kubernetes_pod_node_name
               target_label: instance
+        - job_name: integrations/kubernetes/opencost
+          kubernetes_sd_configs:
+            - role: pod
+          relabel_configs:
+            - action: keep
+              regex: opencost-*
+              source_labels:
+                - __meta_kubernetes_pod_label_app_kubernetes_io_name
         - job_name: 'span-metrics'
           scrape_interval: 60s
           static_configs:

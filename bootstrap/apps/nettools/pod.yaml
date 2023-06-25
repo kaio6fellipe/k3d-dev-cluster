@@ -5,10 +5,10 @@ metadata:
   namespace: default
 spec:
   containers:
-  - name: nettools
-    image: jrecord/nettools:latest
-    command:
-      - sleep
-      - "3600"
-    imagePullPolicy: IfNotPresent
+    - name: nettools
+      image: jrecord/nettools:latest
+      command:
+        - sleep
+        - "3600"
+      imagePullPolicy: IfNotPresent
   restartPolicy: Never

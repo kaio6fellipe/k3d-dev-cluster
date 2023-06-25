@@ -87,6 +87,11 @@ data:
               - name: http.target
               - name: http.status_code
               - name: service.version
+              - name: service.instance.id
+              - name: span.name
+              - name: namespace
+              - name: container
+              - name: pod
             handler_endpoint: 0.0.0.0:12348
           service_graphs:
             enabled: true
@@ -99,6 +104,11 @@ data:
               - http.method
               - http.target
               - http.status_code
+              - service.instance.id
+              - service.name
+              - span.name
+              - span.kind
+              - status.code
             overrides:
               trace_id_key: "traceId"
           receivers:
