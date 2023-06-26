@@ -41,6 +41,11 @@ spec:
                 secretKeyRef:
                   name: secret-grafana-agent
                   key: GRAFANA_CLOUD_TOKEN
+            - name: GRAFANA_CLOUD_GITHUB_TOKEN
+              valueFrom:
+                secretKeyRef:
+                  name: secret-grafana-agent
+                  key: GRAFANA_CLOUD_GITHUB_TOKEN
           image: grafana/agent:v0.33.1
           imagePullPolicy: IfNotPresent
           name: grafana-agent-traces

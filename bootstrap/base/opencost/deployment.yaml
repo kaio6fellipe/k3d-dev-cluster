@@ -44,9 +44,8 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: secret-grafana-agent
-                  key: GRAFANA_CLOUD_TOKEN
+                  key: GRAFANA_CLOUD_TOKEN_OPENCOST
             - name: CLOUD_PROVIDER_API_KEY
-              value: AIzaSyD29bGxmHAVEOBYtgd8sYM2gM2ekfxQX4U
               valueFrom:
                 secretKeyRef:
                   name: secret-grafana-agent

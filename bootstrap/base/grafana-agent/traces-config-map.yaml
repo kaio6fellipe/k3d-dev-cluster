@@ -24,6 +24,20 @@ data:
             source_labels:
               - agent_hostname
             target_label: instance
+      github_exporter:
+        enabled: true
+        scrape_integration: true
+        scrape_interval: 300s
+        repositories:
+          - kaio6fellipe/k3d-dev-cluster
+          - kaio6fellipe/terraform-devops
+          - kaio6fellipe/ansible-devops
+          - kaio6fellipe/argo
+        organizations:
+          - ktech-br
+        users:
+          - kaio6fellipe
+        api_token: ${GRAFANA_CLOUD_GITHUB_TOKEN}
     metrics:
       global:
         scrape_interval: 60s
