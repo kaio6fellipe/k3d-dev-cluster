@@ -1,0 +1,9 @@
+apiVersion: traefik.containo.us/v1alpha1
+kind: Middleware
+metadata:
+  name: nginx-replacepath
+  namespace: nginx
+spec:
+  replacePathRegex:
+    regex: ^/nginx-example/(.*)
+    replacement: /$1
