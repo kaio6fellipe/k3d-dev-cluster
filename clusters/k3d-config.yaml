@@ -31,6 +31,16 @@ options:
       - arg: --tls-san=127.0.0.1
         nodeFilters:
           - server:*
+      - arg: --disable=traefik
+        nodeFilters:
+          - server:*
+      # Flags needed for Cilium deployment
+      # - arg: --flannel-backend=none
+      #   nodeFilters:
+      #     - server:*
+      # - arg: --disable-network-policy
+      #   nodeFilters:
+      #     - server:*
     nodeLabels: []
   kubeconfig:
     updateDefaultKubeconfig: true

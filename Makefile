@@ -35,8 +35,4 @@ list-cluster-info: ##@cluster List base ingress domain information
 
 .PHONY: nettools
 nettools: ##@operation Enter in the busybox pod
-	@kubectl delete pod nettools
-	@sleep 5
-	@kubectl apply -f ./bootstrap/apps/nettools/pod.yaml
-	@sleep 10
 	@kubectl exec -it nettools -- bash

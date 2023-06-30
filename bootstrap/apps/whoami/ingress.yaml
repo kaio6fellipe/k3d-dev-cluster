@@ -1,8 +1,8 @@
-apiVersion: traefik.containo.us/v1alpha1
-kind: IngressRoute
+apiVersion: networking.k8s.io/v1
+kind: Ingress
 metadata:
-  name: nginx
-  namespace: nginx
+  name: whoami-ingress
+  namespace: whoami
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/rewrite-target: /$2
@@ -13,10 +13,10 @@ spec:
     - host: 127.0.0.1.nip.io
       http:
         paths:
-          - path: /nginx-example(/|$)(.*)
+          - path: /whoami(/|$)(.*)
             pathType: Prefix
             backend:
               service:
-                name: nginx-example
+                name: whoami
                 port:
                   number: 80
