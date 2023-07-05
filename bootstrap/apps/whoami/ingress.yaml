@@ -1,20 +1,22 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: app
-  namespace: tns-cloud
+  name: whoami-ingress
+  namespace: whoami
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   ingressClassName: nginx
   rules:
     - host: 127.0.0.1.nip.io
       http:
         paths:
-          - path: /
+          - path: /whoami(/|$)(.*)
             pathType: Prefix
             backend:
               service:
-                name: app
+                name: whoami
                 port:
                   number: 80

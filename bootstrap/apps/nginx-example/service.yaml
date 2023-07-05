@@ -3,7 +3,7 @@ kind: Service
 metadata:
   labels:
     app: nginx
-  name: nginx
+  name: nginx-example
   namespace: nginx
 spec:
   ports:
