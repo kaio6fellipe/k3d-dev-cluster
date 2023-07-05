@@ -1,21 +1,21 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: tns-app
-  namespace: tns-cloud
+  name: emoji-app
+  namespace: emojivoto
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
     nginx.ingress.kubernetes.io/service-upstream: "true"
 spec:
   ingressClassName: nginx
   rules:
-    - host: tns-app.127.0.0.1.nip.io
+    - host: emoji-app.127.0.0.1.nip.io
       http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
-                name: app
+                name: web-svc
                 port:
                   number: 80
