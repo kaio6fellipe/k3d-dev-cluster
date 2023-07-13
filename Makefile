@@ -35,4 +35,8 @@ list-cluster-info: ##@cluster List base ingress domain information
 
 .PHONY: nettools
 nettools: ##@operation Enter in the busybox pod
-	@kubectl exec -it nettools -- bash
+	@kubectl exec -it nettools -n nettools --container nettools -- bash
+
+.PHONY: load-test
+load-test: ##@operation Load test
+	@bash lib/load-gen

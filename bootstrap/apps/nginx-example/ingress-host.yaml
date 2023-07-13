@@ -1,19 +1,18 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: nginx
+  name: nginx-host
   namespace: nginx
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/service-upstream: "true"
 spec:
   ingressClassName: nginx
   rules:
-    - host: 127.0.0.1.nip.io
+    - host: nginx-example.127.0.0.1.nip.io
       http:
         paths:
-          - path: /nginx-example(/|$)(.*)
+          - path: /
             pathType: Prefix
             backend:
               service:

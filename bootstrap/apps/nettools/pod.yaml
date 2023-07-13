@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Pod
 metadata:
   name: nettools
-  namespace: default
+  namespace: nettools
 spec:
   containers:
     - name: nettools

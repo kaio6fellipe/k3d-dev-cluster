@@ -2,7 +2,25 @@
 
 for((num=0; num<2; num=num))
 do
-    curl -s http://127.0.0.1.nip.io:9080//nginx-example > /dev/null
-    curl -s http://127.0.0.1.nip.io:9080// > /dev/null
-    curl -s http://127.0.0.1.nip.io:9080//whoami > /dev/null
+    curl -s http://nginx-example.127.0.0.1.nip.io:9080/ > /dev/null
+done &
+
+for((num=0; num<2; num=num))
+do
+    curl -s http://127.0.0.1.nip.io:9080/nginx-example > /dev/null
+done & 
+
+for((num=0; num<2; num=num))
+do
+    curl -s http://tns-app.127.0.0.1.nip.io:9080/ > /dev/null
+done &
+
+for((num=0; num<2; num=num))
+do
+    curl -s http://whoami.127.0.0.1.nip.io:9080/ > /dev/null
+done &
+
+for((num=0; num<2; num=num))
+do
+    curl -s http://emoji-app.127.0.0.1.nip.io:9080/ > /dev/null
 done
