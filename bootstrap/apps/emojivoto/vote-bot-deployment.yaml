@@ -20,13 +20,13 @@ spec:
         version: v11
     spec:
       containers:
-      - command:
-        - emojivoto-vote-bot
-        env:
-        - name: WEB_HOST
-          value: web-svc.emojivoto:80
-        image: docker.l5d.io/buoyantio/emojivoto-web:v11
-        name: vote-bot
-        resources:
-          requests:
-            cpu: 10m
+        - command:
+            - emojivoto-vote-bot
+          env:
+            - name: WEB_HOST
+              value: web-svc.emojivoto:80
+          image: docker.l5d.io/buoyantio/emojivoto-web:v11
+          name: vote-bot
+          resources:
+            requests:
+              cpu: 10m

@@ -20,19 +20,19 @@ spec:
         version: v11
     spec:
       containers:
-      - env:
-        - name: GRPC_PORT
-          value: "8080"
-        - name: PROM_PORT
-          value: "8801"
-        image: docker.l5d.io/buoyantio/emojivoto-voting-svc:v11
-        name: voting-svc
-        ports:
-        - containerPort: 8080
-          name: grpc
-        - containerPort: 8801
-          name: prom
-        resources:
-          requests:
-            cpu: 100m
+        - env:
+            - name: GRPC_PORT
+              value: "8080"
+            - name: PROM_PORT
+              value: "8801"
+          image: docker.l5d.io/buoyantio/emojivoto-voting-svc:v11
+          name: voting-svc
+          ports:
+            - containerPort: 8080
+              name: grpc
+            - containerPort: 8801
+              name: prom
+          resources:
+            requests:
+              cpu: 100m
       serviceAccountName: voting

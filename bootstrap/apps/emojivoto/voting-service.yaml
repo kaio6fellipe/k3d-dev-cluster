@@ -5,11 +5,11 @@ metadata:
   namespace: emojivoto
 spec:
   ports:
-  - name: grpc
-    port: 8080
-    targetPort: 8080
-  - name: prom
-    port: 8801
-    targetPort: 8801
+    - name: grpc
+      port: 8080
+      targetPort: 8080
+    - name: prom
+      port: 8801
+      targetPort: 8801
   selector:
     app: voting-svc
