@@ -1,9 +1,10 @@
 #!/bin/bash
 
 linkerd check --pre || true
-linkerd install --crds | kubectl apply -f - || true
-linkerd install | kubectl apply -f - || true
+kubectl apply -f ./bootstrap/base/linkerd/crds --recursive
+kubectl apply -f ./bootstrap/base/linkerd/deployment --recursive
 linkerd check
-linkerd viz install | kubectl apply -f -
+kubectl apply -f ./bootstrap/base/linkerd/viz --recursive
+kubectl rollout status deployment web -n linkerd-viz
 linkerd check
 linkerd viz dashboard &
