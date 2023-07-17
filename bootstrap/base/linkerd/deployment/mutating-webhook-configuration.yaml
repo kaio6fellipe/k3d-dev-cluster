@@ -1,0 +1,36 @@
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: MutatingWebhookConfiguration
+metadata:
+  name: linkerd-proxy-injector-webhook-config
+  labels:
+    linkerd.io/control-plane-component: proxy-injector
+    linkerd.io/control-plane-ns: linkerd
+webhooks:
+  - name: linkerd-proxy-injector.linkerd.io
+    namespaceSelector:
+      matchExpressions:
+        - key: config.linkerd.io/admission-webhooks
+          operator: NotIn
+          values:
+            - disabled
+        - key: kubernetes.io/metadata.name
+          operator: NotIn
+          values:
+            - kube-system
+            - cert-manager
+    objectSelector: null
+    clientConfig:
+      service:
+        name: linkerd-proxy-injector
+        namespace: linkerd
+        path: "/"
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURVekNDQWp1Z0F3SUJBZ0lSQUthdnNhZVZEdVVoSXBMNGMreU96UGt3RFFZSktvWklodmNOQVFFTEJRQXcKTFRFck1Da0dBMVVFQXhNaWJHbHVhMlZ5WkMxd2NtOTRlUzFwYm1wbFkzUnZjaTVzYVc1clpYSmtMbk4yWXpBZQpGdzB5TXpBM01UUXhORFU0TURSYUZ3MHlOREEzTVRNeE5EVTRNRFJhTUMweEt6QXBCZ05WQkFNVElteHBibXRsCmNtUXRjSEp2ZUhrdGFXNXFaV04wYjNJdWJHbHVhMlZ5WkM1emRtTXdnZ0VpTUEwR0NTcUdTSWIzRFFFQkFRVUEKQTRJQkR3QXdnZ0VLQW9JQkFRRFN4cC9nZU5jU0lXaG9Ka2c4a0t2QndPaVV1ZVduOU9Mb1lwOTFKbnZjL3RGUQp2UHFCekQ5VVdEaE9WOS9qZFkvVnJ2Mzd3T0wrOGcrSS9mL1ZuYUhGNFhkZWh2TFFRSXc3em02aURsZ1hLYW9KCmREdjBRUXUwdURNYUtqQTMwdGg1dHBzT3I4bFhhTTI5RUdyOXNkZGg4eG5zNlNISmtRVFpkUU9HTGhSSWo4MHUKS09aT1RUMVFYZG1tY2xtQSszUDdwcE9MTmRZUG56TW14T1NLVzMxT2czZkp5MXRveG5OeFgrdUZpQ1N3S0IxQQozTUlvTWh5emEwRkFsbmZQZ3gxMTZ2cXFZVTcxS1FoUUJuS2NzTGtVbWdJSkxTSUhNNGQ3bi80OTVPWjlweE9oCk4vR2J1czZUK1hyd0hnTWJNaFRKOEZuTWl1MG4xUE9xZVlIaTQyNHpBZ01CQUFHamJqQnNNQTRHQTFVZER3RUIKL3dRRUF3SUZvREFkQmdOVkhTVUVGakFVQmdnckJnRUZCUWNEQVFZSUt3WUJCUVVIQXdJd0RBWURWUjBUQVFILwpCQUl3QURBdEJnTlZIUkVFSmpBa2dpSnNhVzVyWlhKa0xYQnliM2g1TFdsdWFtVmpkRzl5TG14cGJtdGxjbVF1CmMzWmpNQTBHQ1NxR1NJYjNEUUVCQ3dVQUE0SUJBUUJic1R2M0MvLy8xT0wrSzJyK0xneHdyU1Zib3l0VTUySlYKdXQ2NTJwdnVVbGxOeHJpKzBaVi8zSmp0QmcxZmVTaGxmNVRLcEZyaHF6SGlBTC9nT1NBdjQ4YzlaUlNJaHBBZgo5b3Q5VlJMUWRVeHVJdjRLMDB4NFF1dWJnTXNlTjhvZVUvdFkrd3JORjhvTGVoWVJzV1FoR0k3OTQ4WGw1eWlJCkx5Uy91VlloMWhtUk9HOFRiOWhBenhzd3hYVnZmTlhrMFVvQkRGNnFrMURPK1pJelRRMXZ5RnZFVFpTV2dtWE0KM21Lc1dEcjhCbTh2dG1wZWUzd0tKbGt3Z25Kcnp5TFQ4ZXJjQmJ5cVZHaTdnRkl2QVdaNVRxL0U0MUpYd045cAppcWRlemZXZElWVnNRd1E0VmNLZUJUT05hRWZTY2pkbTM2WDNWZGFDVTBZaHgyYTVSRG1ICi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0=
+    failurePolicy: Ignore
+    admissionReviewVersions: ["v1", "v1beta1"]
+    rules:
+      - operations: ["CREATE"]
+        apiGroups: [""]
+        apiVersions: ["v1"]
+        resources: ["pods", "services"]
+    sideEffects: None

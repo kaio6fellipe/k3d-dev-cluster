@@ -1301,6 +1301,7 @@ spec:
         - args:
             - -linkerd-metrics-api-addr=metrics-api.linkerd-viz.svc.cluster.local:8085
             - -cluster-domain=cluster.local
+            - -grafana-addr=ktechdevops.grafana.net
             - -controller-namespace=linkerd
             - -log-level=info
             - -log-format=plain

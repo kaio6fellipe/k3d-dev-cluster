@@ -28,7 +28,7 @@ options:
     disableRollback: false
   k3s:
     extraArgs:
-      - arg: --tls-san=127.0.0.1
+      - arg: --tls-san=x.x.x.x
         nodeFilters:
           - server:*
       - arg: --disable=traefik
