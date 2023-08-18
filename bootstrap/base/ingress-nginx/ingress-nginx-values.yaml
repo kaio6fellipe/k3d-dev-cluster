@@ -343,15 +343,15 @@ controller:
       scaleDown:
         stabilizationWindowSeconds: 60
         policies:
-        - type: Pods
-          value: 1
-          periodSeconds: 30
+          - type: Pods
+            value: 1
+            periodSeconds: 30
       scaleUp:
         stabilizationWindowSeconds: 60
         policies:
-        - type: Pods
-          value: 1
-          periodSeconds: 15
+          - type: Pods
+            value: 1
+            periodSeconds: 15
   autoscalingTemplate: []
   # Custom or additional autoscaling metrics
   # ref: https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/#support-for-custom-metrics

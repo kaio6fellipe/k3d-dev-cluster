@@ -4,6 +4,7 @@ linkerd check --pre || true
 kubectl apply -f ./bootstrap/base/linkerd/crds --recursive
 kubectl create namespace linkerd || true
 kubectl apply -f ./bootstrap/base/linkerd/deployment --recursive
+kubectl rollout status deployment linkerd-proxy-injector -n linkerd
 linkerd check
 kubectl create namespace linkerd-viz || true
 kubectl apply -f ./bootstrap/base/linkerd/viz --recursive
