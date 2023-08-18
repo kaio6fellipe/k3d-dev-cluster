@@ -2,8 +2,8 @@ kind: Simple
 apiVersion: k3d.io/v1alpha5
 metadata:
   name: dev-cluster
-servers: 2
-agents: 1
+servers: 3
+agents: 2
 kubeAPI:
   hostIP: 0.0.0.0
   hostPort: "6550"
@@ -28,7 +28,7 @@ options:
     disableRollback: false
   k3s:
     extraArgs:
-      - arg: --tls-san=127.0.0.1
+      - arg: --tls-san=x.x.x.x
         nodeFilters:
           - server:*
       - arg: --disable=traefik

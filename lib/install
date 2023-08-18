@@ -49,3 +49,13 @@ then
 else
     echo "kubeseal already installed with version: \"$(kubeseal --version)\""
 fi
+
+if ! command -v linkerd &> /dev/null
+then
+    echo "linkerd not found, installing..."
+    curl --proto '=https' --tlsv1.2 -sSfL https://run.linkerd.io/install | sh
+    sudo mv $HOME/.linkerd2/bin/linkerd /usr/local/bin/linkerd
+    echo "...linkerd installed."
+else
+    echo "linkerd already installed with version: \"$(linkerd version --client)\""
+fi

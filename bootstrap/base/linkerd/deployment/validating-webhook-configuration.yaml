@@ -1,0 +1,66 @@
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: linkerd-sp-validator-webhook-config
+  labels:
+    linkerd.io/control-plane-component: destination
+    linkerd.io/control-plane-ns: linkerd
+webhooks:
+  - name: linkerd-sp-validator.linkerd.io
+    namespaceSelector:
+      matchExpressions:
+        - key: config.linkerd.io/admission-webhooks
+          operator: NotIn
+          values:
+            - disabled
+    clientConfig:
+      service:
+        name: linkerd-sp-validator
+        namespace: linkerd
+        path: "/"
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURUVENDQWpXZ0F3SUJBZ0lSQVBiclJ6ZVBObXAySk56OU9vTzluS0V3RFFZSktvWklodmNOQVFFTEJRQXcKS3pFcE1DY0dBMVVFQXhNZ2JHbHVhMlZ5WkMxemNDMTJZV3hwWkdGMGIzSXViR2x1YTJWeVpDNXpkbU13SGhjTgpNak13TnpFME1UUTFPREEwV2hjTk1qUXdOekV6TVRRMU9EQTBXakFyTVNrd0p3WURWUVFERXlCc2FXNXJaWEprCkxYTndMWFpoYkdsa1lYUnZjaTVzYVc1clpYSmtMbk4yWXpDQ0FTSXdEUVlKS29aSWh2Y05BUUVCQlFBRGdnRVAKQURDQ0FRb0NnZ0VCQVBJZXdWSjUwNSs0bnFBZWVjbzh6dWNMRDdoZktnR3MwSVlvQitrWDNSUExYLzUxUVB5VwpDWDl0ekZMNGdQOXJSallGQXFETjUvT0liRWJSSGhlVEg0QlRGdzJrdmVxSm5DWExqaE14dlAwQ29ndldjcEg5CkhZTkcxWlpVTC92WHg0b2xhR2t3aDJlVTdwNEZ1NVBXUGJGT0dyZGJ0Z2cxSXFmbm9TRmlHdFhWajhvSW53eHQKcXFxUjA2MnhhZmlMMVppQ1BOT1BoY29YbWwrMVUyUDVBYm1MM1dCWGZudHI0UGgrWlVKQ3Z6RmJJSVl0TUpudgpBMGcyK243TW5HOWtIOTh4SXdIanBseVdKS0lzUkhCL2dxTWlvWTBUTjZtaE9zWVBpeGY3d3d2Y0drQ1E3WTlqCmQ5QlNqWFJ2aXZVWDBMVjBVTHdOLzhVZDhhNEZGZjNBclVzQ0F3RUFBYU5zTUdvd0RnWURWUjBQQVFIL0JBUUQKQWdXZ01CMEdBMVVkSlFRV01CUUdDQ3NHQVFVRkJ3TUJCZ2dyQmdFRkJRY0RBakFNQmdOVkhSTUJBZjhFQWpBQQpNQ3NHQTFVZEVRUWtNQ0tDSUd4cGJtdGxjbVF0YzNBdGRtRnNhV1JoZEc5eUxteHBibXRsY21RdWMzWmpNQTBHCkNTcUdTSWIzRFFFQkN3VUFBNElCQVFDMTZGQVh6STR5UlFhbkxBOGN4b25QSGFEbHBzdlhsa1dOZXhtQTNEbG0KajFybzRhdDVWMUdxTFk4VWNqZThCVTRPWGNjSjVXWWp0MVkyTE9hQUlzQktqWndjNWxXQzdEdTJqSzJCT01ScQo4emhSWE1QclQyRWk1RXRhS3hmS3E1OVVZM3czVGN5c1lFb2gzWmFHWS9xQ2QzRmJ0L0JxdVczbFlKcUJhTTh6CnBiK1hFbzdNMUZ5Y0FOelJtUXhhRzEzOHRUcm1DM3BOdCtraGZya1RwZ1YwMlVhVXY3cUtyWHVuRXB6SWMxWXYKMHJ3cXBBOVIwRkdPL2FWQ3FEN3liQkNWdjUvcUEyRjRrdUNHTlBSeHhUZ2xmbkU1UnlSOXNzNDg0eExCczN0VwpTelVZeWhha0VRSHg1U29rS2Q1VWNyaWMyOWdINGlzd0oyS0ljaXVPMGRDdAotLS0tLUVORCBDRVJUSUZJQ0FURS0tLS0t
+    failurePolicy: Ignore
+    admissionReviewVersions: ["v1", "v1beta1"]
+    rules:
+      - operations: ["CREATE", "UPDATE"]
+        apiGroups: ["linkerd.io"]
+        apiVersions: ["v1alpha1", "v1alpha2"]
+        resources: ["serviceprofiles"]
+    sideEffects: None
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: linkerd-policy-validator-webhook-config
+  labels:
+    linkerd.io/control-plane-component: destination
+    linkerd.io/control-plane-ns: linkerd
+webhooks:
+  - name: linkerd-policy-validator.linkerd.io
+    namespaceSelector:
+      matchExpressions:
+        - key: config.linkerd.io/admission-webhooks
+          operator: NotIn
+          values:
+            - disabled
+    clientConfig:
+      service:
+        name: linkerd-policy-validator
+        namespace: linkerd
+        path: "/"
+      caBundle: LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURXVENDQWtHZ0F3SUJBZ0lSQU9iRHJlV25XVGdZZ2lSWEJpY1pPem93RFFZSktvWklodmNOQVFFTEJRQXcKTHpFdE1Dc0dBMVVFQXhNa2JHbHVhMlZ5WkMxd2IyeHBZM2t0ZG1Gc2FXUmhkRzl5TG14cGJtdGxjbVF1YzNaagpNQjRYRFRJek1EY3hOREUwTlRnd05Gb1hEVEkwTURjeE16RTBOVGd3TkZvd0x6RXRNQ3NHQTFVRUF4TWtiR2x1CmEyVnlaQzF3YjJ4cFkza3RkbUZzYVdSaGRHOXlMbXhwYm10bGNtUXVjM1pqTUlJQklqQU5CZ2txaGtpRzl3MEIKQVFFRkFBT0NBUThBTUlJQkNnS0NBUUVBdVA0NGhQRE14TFNLYWsxU0E1TlBYcEVhcVdFVjRoS2VFN1ZkNXlsUgo1RTJaRmwrbTU3KzFZSFhTMzl2REo2UVk0enNKRjVLSUZZL3IvOU50OCtRbEVHZHpqb08reXVBZDU3SFBlVUg3CmpsWkRPWE5pVlFRRWxBVmV5UFFsM3hMaklUUHJEaS8ycGJuY2hzSmJINWU0RHl2cnVkSDBHam5iTlQvTzZ2Q2MKcXIrYUpiVXlFaHdTdVJWR0JnU3QzQjFIWkR1dWJmSTllK2JPZVVIT1NyUTdXZEhaM1M2cGNzRWt1bHlFSFNzTgptaXZEZk5nUGVUMi9VR2NNZXovVGZGWGo5NXh5Q0xNR3ozSkY4N0ZWa1pyS2JpMXRzZEl2WUJWekJjT3VVL0FwClVuL1Y4WVdhaVBZOVZLVHZMVlozWVQzdWtNUVl4eXZzQUJMVG1IbVZ2YkdaSFFJREFRQUJvM0F3YmpBT0JnTlYKSFE4QkFmOEVCQU1DQmFBd0hRWURWUjBsQkJZd0ZBWUlLd1lCQlFVSEF3RUdDQ3NHQVFVRkJ3TUNNQXdHQTFVZApFd0VCL3dRQ01BQXdMd1lEVlIwUkJDZ3dKb0lrYkdsdWEyVnlaQzF3YjJ4cFkza3RkbUZzYVdSaGRHOXlMbXhwCmJtdGxjbVF1YzNaak1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQ2FNVFBLeFcyQmtvNzE1a05hRHJCYkdvaFUKdXF0Nng4UTJ4cU8rdTFMUjk3SFphaTl0TE1MSk1EZktkYXA2ZjlVcWNiMjVBQlN2bDFuUXl5dElZZUgwSnpTRwpaUWpJUHE3TVNUUjZSaTZtM0V0OTZZNHFibDhQVDRIejBJNTNQb1R1U1FUMEFRQzBSYzgyVUZ5MnkyVGxWbnFjCnZGSzBZSGtRMm93QTc2TnpkSk5QOVRVRnFvUy9RRDRnVU12OGFJb3dUbjlCS2NHSndMVXFSY3BjTW9mZ3UzcDkKQmZ0aElwMVFPNFJTdWY0TGJGcU9mTXpSM2xrK05mOXNTbjRKTVlhaU5SMm1nVHlGVkpBOU1qdlRnWUU4WmVmZwpuSUc3aFgvWnY5Nldiakh5Uk4zWnRDNmlpcy91TFJ6ZnVOTFlBL0dYb0hiNm1WTVg2QnlmSmVuMzA3akQKLS0tLS1FTkQgQ0VSVElGSUNBVEUtLS0tLQ==
+    failurePolicy: Ignore
+    admissionReviewVersions: ["v1", "v1beta1"]
+    rules:
+      - operations: ["CREATE", "UPDATE"]
+        apiGroups: ["policy.linkerd.io"]
+        apiVersions: ["v1alpha1", "v1beta1"]
+        resources:
+          - authorizationpolicies
+          - httproutes
+          - networkauthentications
+          - meshtlsauthentications
+          - serverauthorizations
+          - servers
+    sideEffects: None

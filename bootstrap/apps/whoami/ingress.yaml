@@ -5,15 +5,14 @@ metadata:
   namespace: whoami
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/rewrite-target: /$2
-    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/service-upstream: "true"
 spec:
   ingressClassName: nginx
   rules:
-    - host: 127.0.0.1.nip.io
+    - host: whoami.127.0.0.1.nip.io
       http:
         paths:
-          - path: /whoami(/|$)(.*)
+          - path: /
             pathType: Prefix
             backend:
               service:

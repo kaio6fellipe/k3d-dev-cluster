@@ -1,0 +1,127 @@
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-linkerd-viz-metrics-api
+  labels:
+    linkerd.io/extension: viz
+    component: metrics-api
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: linkerd-linkerd-viz-metrics-api
+subjects:
+  - kind: ServiceAccount
+    name: metrics-api
+    namespace: linkerd-viz
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-linkerd-viz-prometheus
+  labels:
+    linkerd.io/extension: viz
+    component: prometheus
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: linkerd-linkerd-viz-prometheus
+subjects:
+  - kind: ServiceAccount
+    name: prometheus
+    namespace: linkerd-viz
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-linkerd-viz-tap
+  labels:
+    linkerd.io/extension: viz
+    component: tap
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: linkerd-linkerd-viz-tap
+subjects:
+  - kind: ServiceAccount
+    name: tap
+    namespace: linkerd-viz
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: linkerd-linkerd-viz-tap-auth-delegator
+  labels:
+    linkerd.io/extension: viz
+    component: tap
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:auth-delegator
+subjects:
+  - kind: ServiceAccount
+    name: tap
+    namespace: linkerd-viz
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: linkerd-linkerd-viz-web-check
+  labels:
+    linkerd.io/extension: viz
+    component: web
+roleRef:
+  kind: ClusterRole
+  name: linkerd-linkerd-viz-web-check
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: web
+    namespace: linkerd-viz
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-linkerd-viz-web-admin
+  labels:
+    linkerd.io/extension: viz
+    component: web
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: linkerd-linkerd-viz-tap-admin
+subjects:
+  - kind: ServiceAccount
+    name: web
+    namespace: linkerd-viz
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: linkerd-linkerd-viz-web-api
+  labels:
+    linkerd.io/extension: viz
+    component: web
+roleRef:
+  kind: ClusterRole
+  name: linkerd-linkerd-viz-web-api
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: web
+    namespace: linkerd-viz
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: linkerd-tap-injector
+  labels:
+    linkerd.io/extension: viz
+subjects:
+  - kind: ServiceAccount
+    name: tap-injector
+    namespace: linkerd-viz
+roleRef:
+  kind: ClusterRole
+  name: linkerd-tap-injector
+  apiGroup: rbac.authorization.k8s.io

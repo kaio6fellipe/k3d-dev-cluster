@@ -1,0 +1,425 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/inject: enabled
+    config.linkerd.io/proxy-await: "enabled"
+  labels:
+    linkerd.io/extension: viz
+    app.kubernetes.io/name: metrics-api
+    app.kubernetes.io/part-of: Linkerd
+    app.kubernetes.io/version: stable-2.13.5
+    component: metrics-api
+  name: metrics-api
+  namespace: linkerd-viz
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      linkerd.io/extension: viz
+      component: metrics-api
+  template:
+    metadata:
+      annotations:
+        checksum/config: b73fb1bf343c4203fbab8ee108c5eba2e07d184177e204677dc83d4cad2cd12b
+        linkerd.io/created-by: linkerd/helm stable-2.13.5
+        linkerd.io/inject: enabled
+        config.alpha.linkerd.io/proxy-wait-before-exit-seconds: "0"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      labels:
+        linkerd.io/extension: viz
+        component: metrics-api
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+
+      containers:
+        - args:
+            - -controller-namespace=linkerd
+            - -log-level=info
+            - -log-format=plain
+            - -cluster-domain=cluster.local
+            - -prometheus-url=http://prometheus.linkerd-viz.svc.cluster.local:9090
+            - -enable-pprof=false
+          image: cr.l5d.io/linkerd/metrics-api:stable-2.13.5
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 9995
+            initialDelaySeconds: 10
+          name: metrics-api
+          ports:
+            - containerPort: 8085
+              name: http
+            - containerPort: 9995
+              name: admin-http
+          readinessProbe:
+            failureThreshold: 7
+            httpGet:
+              path: /ready
+              port: 9995
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            runAsNonRoot: true
+            readOnlyRootFilesystem: true
+            runAsUser: 2103
+            seccompProfile:
+              type: RuntimeDefault
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: metrics-api
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/inject: enabled
+    config.linkerd.io/proxy-await: "enabled"
+  labels:
+    linkerd.io/extension: viz
+    app.kubernetes.io/name: prometheus
+    app.kubernetes.io/part-of: Linkerd
+    app.kubernetes.io/version: stable-2.13.5
+    component: prometheus
+    namespace: linkerd-viz
+  name: prometheus
+  namespace: linkerd-viz
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      linkerd.io/extension: viz
+      component: prometheus
+      namespace: linkerd-viz
+  template:
+    metadata:
+      annotations:
+        linkerd.io/created-by: linkerd/helm stable-2.13.5
+        linkerd.io/inject: enabled
+        config.alpha.linkerd.io/proxy-wait-before-exit-seconds: "0"
+      labels:
+        linkerd.io/extension: viz
+        component: prometheus
+        namespace: linkerd-viz
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - args:
+            - --log.level=info
+            - --log.format=logfmt
+            - --config.file=/etc/prometheus/prometheus.yml
+            - --storage.tsdb.path=/data
+            - --storage.tsdb.retention.time=6h
+          image: prom/prometheus:v2.43.0
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /-/healthy
+              port: 9090
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          name: prometheus
+          ports:
+            - containerPort: 9090
+              name: admin-http
+          readinessProbe:
+            httpGet:
+              path: /-/ready
+              port: 9090
+            initialDelaySeconds: 30
+            timeoutSeconds: 30
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 65534
+            runAsGroup: 65534
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /data
+              name: data
+            - mountPath: /etc/prometheus/prometheus.yml
+              name: prometheus-config
+              subPath: prometheus.yml
+              readOnly: true
+      securityContext:
+        fsGroup: 65534
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: prometheus
+      volumes:
+        - name: data
+          emptyDir: {}
+        - configMap:
+            name: prometheus-config
+          name: prometheus-config
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  annotations:
+    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/inject: enabled
+    config.linkerd.io/proxy-await: "enabled"
+  labels:
+    linkerd.io/extension: viz
+    app.kubernetes.io/name: tap
+    app.kubernetes.io/part-of: Linkerd
+    app.kubernetes.io/version: stable-2.13.5
+    component: tap
+    namespace: linkerd-viz
+  name: tap
+  namespace: linkerd-viz
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      linkerd.io/extension: viz
+      component: tap
+      namespace: linkerd-viz
+  template:
+    metadata:
+      annotations:
+        checksum/config: 5bc3def328b7f8e252ecd437eeee4d848a33ab6924fd0bc3ea9c25584659100d
+        linkerd.io/created-by: linkerd/helm stable-2.13.5
+        linkerd.io/inject: enabled
+        config.alpha.linkerd.io/proxy-wait-before-exit-seconds: "0"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      labels:
+        linkerd.io/extension: viz
+        component: tap
+        namespace: linkerd-viz
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+
+      containers:
+        - args:
+            - api
+            - -api-namespace=linkerd
+            - -log-level=info
+            - -log-format=plain
+            - -identity-trust-domain=cluster.local
+            - -enable-pprof=false
+          image: cr.l5d.io/linkerd/tap:stable-2.13.5
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 9998
+            initialDelaySeconds: 10
+          name: tap
+          ports:
+            - containerPort: 8088
+              name: grpc
+            - containerPort: 8089
+              name: apiserver
+            - containerPort: 9998
+              name: admin-http
+          readinessProbe:
+            failureThreshold: 7
+            httpGet:
+              path: /ready
+              port: 9998
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 2103
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /var/run/linkerd/tls
+              name: tls
+              readOnly: true
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: tap
+      volumes:
+        - name: tls
+          secret:
+            secretName: tap-k8s-tls
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  annotations:
+    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/inject: enabled
+    config.linkerd.io/proxy-await: "enabled"
+  labels:
+    linkerd.io/extension: viz
+    app.kubernetes.io/name: tap-injector
+    app.kubernetes.io/part-of: Linkerd
+    component: tap-injector
+  name: tap-injector
+  namespace: linkerd-viz
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: tap-injector
+  template:
+    metadata:
+      annotations:
+        checksum/config: aa396350e46adeaaef51df8964f91324964297345c79ee216b9ce22c1ce9f515
+        linkerd.io/created-by: linkerd/helm stable-2.13.5
+        linkerd.io/inject: enabled
+        config.alpha.linkerd.io/proxy-wait-before-exit-seconds: "0"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      labels:
+        linkerd.io/extension: viz
+        component: tap-injector
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+
+      containers:
+        - args:
+            - injector
+            - -tap-service-name=tap.linkerd-viz.serviceaccount.identity.linkerd.cluster.local
+            - -log-level=info
+            - -log-format=plain
+            - -enable-pprof=false
+          image: cr.l5d.io/linkerd/tap:stable-2.13.5
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 9995
+            initialDelaySeconds: 10
+          name: tap-injector
+          ports:
+            - containerPort: 8443
+              name: tap-injector
+            - containerPort: 9995
+              name: admin-http
+          readinessProbe:
+            failureThreshold: 7
+            httpGet:
+              path: /ready
+              port: 9995
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 2103
+            seccompProfile:
+              type: RuntimeDefault
+          volumeMounts:
+            - mountPath: /var/run/linkerd/tls
+              name: tls
+              readOnly: true
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: tap-injector
+      volumes:
+        - name: tls
+          secret:
+            secretName: tap-injector-k8s-tls
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    linkerd.io/created-by: linkerd/helm stable-2.13.5
+    linkerd.io/inject: enabled
+    config.linkerd.io/proxy-await: "enabled"
+  labels:
+    linkerd.io/extension: viz
+    app.kubernetes.io/name: web
+    app.kubernetes.io/part-of: Linkerd
+    app.kubernetes.io/version: stable-2.13.5
+    component: web
+    namespace: linkerd-viz
+  name: web
+  namespace: linkerd-viz
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      linkerd.io/extension: viz
+      component: web
+      namespace: linkerd-viz
+  template:
+    metadata:
+      annotations:
+        linkerd.io/created-by: linkerd/helm stable-2.13.5
+        linkerd.io/inject: enabled
+        config.alpha.linkerd.io/proxy-wait-before-exit-seconds: "0"
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
+      labels:
+        linkerd.io/extension: viz
+        component: web
+        namespace: linkerd-viz
+    spec:
+      nodeSelector:
+        kubernetes.io/os: linux
+      containers:
+        - args:
+            - -linkerd-metrics-api-addr=metrics-api.linkerd-viz.svc.cluster.local:8085
+            - -cluster-domain=cluster.local
+            - -grafana-addr=ktechdevops.grafana.net
+            - -controller-namespace=linkerd
+            - -log-level=info
+            - -log-format=plain
+            - -enforced-host=^(localhost|127\.0\.0\.1|web\.linkerd-viz\.svc\.cluster\.local|web\.linkerd-viz\.svc|\[::1\])(:\d+)?$
+            - -enable-pprof=false
+          image: cr.l5d.io/linkerd/web:stable-2.13.5
+          imagePullPolicy: IfNotPresent
+          livenessProbe:
+            httpGet:
+              path: /ping
+              port: 9994
+            initialDelaySeconds: 10
+          name: web
+          ports:
+            - containerPort: 8084
+              name: http
+            - containerPort: 9994
+              name: admin-http
+          readinessProbe:
+            failureThreshold: 7
+            httpGet:
+              path: /ready
+              port: 9994
+          resources: {}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+            readOnlyRootFilesystem: true
+            runAsNonRoot: true
+            runAsUser: 2103
+            seccompProfile:
+              type: RuntimeDefault
+      securityContext:
+        seccompProfile:
+          type: RuntimeDefault
+      serviceAccountName: web

@@ -58,6 +58,7 @@ data:
             ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
             insecure_skip_verify: false
             server_name: kubernetes
+
         - bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
           job_name: integrations/kubernetes/kubelet
           kubernetes_sd_configs:
@@ -79,6 +80,7 @@ data:
             ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
             insecure_skip_verify: false
             server_name: kubernetes
+
         - job_name: integrations/kubernetes/kube-state-metrics
           kubernetes_sd_configs:
             - role: pod
@@ -91,6 +93,7 @@ data:
               regex: kube-state-metrics
               source_labels:
                 - __meta_kubernetes_pod_label_app_kubernetes_io_name
+
         - bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
           job_name: integrations/node_exporter
           kubernetes_sd_configs:
@@ -121,6 +124,7 @@ data:
           tls_config:
             ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
             insecure_skip_verify: false
+
         - job_name: integrations/grafana-mimir/kube-state-metrics
           kubernetes_sd_configs:
             - role: pod
@@ -140,6 +144,7 @@ data:
               action: keep
               separator: ''
               source_labels: [ deployment, statefulset, pod ]
+
         - job_name: integrations/grafana-mimir/kubelet
           bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
           kubernetes_sd_configs:
@@ -168,6 +173,7 @@ data:
               ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
               insecure_skip_verify: false
               server_name: kubernetes
+
         - job_name: integrations/grafana-mimir/cadvisor
           bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
           kubernetes_sd_configs:
@@ -196,6 +202,7 @@ data:
             ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
             insecure_skip_verify: false
             server_name: kubernetes
+
         - job_name: integrations/grafana-mimir/metrics
           kubernetes_sd_configs:
             - role: pod
@@ -244,6 +251,7 @@ data:
               source_labels:
                 - __meta_kubernetes_pod_node_name
               target_label: instance
+
         - job_name: integrations/kubernetes/opencost
           kubernetes_sd_configs:
             - role: pod
@@ -252,10 +260,12 @@ data:
               regex: opencost-*
               source_labels:
                 - __meta_kubernetes_pod_label_app_kubernetes_io_name
+
         - job_name: 'span-metrics'
           scrape_interval: 60s
           static_configs:
             - targets: ['grafana-agent-traces.grafana-agent.svc.cluster.local:12348']
+
         - job_name: integrations/kubernetes/pod-metrics
           kubernetes_sd_configs:
             - role: pod
@@ -292,6 +302,7 @@ data:
             - source_labels: ['__meta_kubernetes_pod_container_name']
               action: 'replace'
               target_label: 'container'
+
         - job_name: integrations/kubernetes/service-metrics
           kubernetes_sd_configs:
             - role: service
@@ -327,6 +338,7 @@ data:
               separator: '/'
               target_label: 'job'
               replacement: '$1'
+
     logs:
       configs:
       - name: integrations
